@@ -36,7 +36,7 @@ if env | grep "DOCKER_VERNEMQ_DISCOVERY_NODE" -q; then
         discovery_node=$tmp
     fi
 
-    sed -i.bak -r "/-eval.+/d" /vernemq/etc/vm.args 
+    sed -i.bak -r "/-eval.+/d" /vernemq/etc/vm.args
     echo "-eval \"vmq_server_cmd:node_join('VerneMQ@$discovery_node')\"" >> /vernemq/etc/vm.args
 fi
 
@@ -157,8 +157,12 @@ sigterm_handler() {
         else
             terminating_node_name=VerneMQ@$IP_ADDRESS
         fi
-        /vernemq/bin/vmq-admin cluster leave node=$terminating_node_name -k > /dev/null
-        /vernemq/bin/vmq-admin node stop > /dev/null
+
+        echo "Leaving the cluster..."
+
+        /vernemq/bin/vmq-admin cluster leave node=$terminating_node_name -k
+        /vernemq/bin/vmq-admin node stop
+
         kill -s TERM ${pid}
         exit 0
     fi
